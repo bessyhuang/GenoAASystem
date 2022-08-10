@@ -3,7 +3,7 @@ from typing import Union
 import uvicorn
 import motor.motor_asyncio
 
-MONGODB_INFO = "mongodb://127.0.0.1:27017"
+MONGODB_INFO = "mongodb://10.64.16.166:27017"
 DATABASE = "FabryDisease"
 COLLECTION = "Clinical"
 
@@ -69,4 +69,4 @@ async def get_coll():
         return ResponseModel(clincals, "Empty list returned")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="10.64.16.166", port=8000)
+    uvicorn.run(app, host="10.64.16.241", port=8000)
