@@ -69,4 +69,4 @@ async def get_coll():
         return ResponseModel(clincals, "Empty list returned")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="10.64.16.241", port=8000)
+    uvicorn.run(app='main:app', host="10.64.16.241", port=8000, reload=True, debug=True)
