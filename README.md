@@ -6,3 +6,10 @@
 * Reference:
   * [MongoDB Documentation](https://www.mongodb.com/docs/drivers/python/)
   * [PyMongo vs Motor](https://gist.github.com/anand2312/840aeb3e98c3d7dbb3db8b757c1a7ace)
+
+## Json to Grid
+* [DataTables | Table plug-in for jQuery](https://datatables.net/)
+  - Reference: https://www.youtube.com/watch?v=h7sROvGH96k
+  
+## Template Engine
+* [Jinja2](https://fastapi.tiangolo.com/advanced/templates/)
