@@ -12,7 +12,6 @@ from fastapi.templating import Jinja2Templates
 
 MONGODB_INFO = "mongodb://10.64.16.166:27017"
 DATABASE = "FabryDisease"
-COLLECTION = "Clinical"
 
 
 # 1. Connect to MongoDB by using motor
@@ -56,12 +55,12 @@ def ResponseModel(data, message):
     }
 
 # 3. Retrieve all documents in collection present in the database
-async def retrieve_coll(COLLECTION):
-    new_coll = []
+async def retrieve_data(COLLECTION):
+    new_collection = []
     collection = db.get_collection(COLLECTION)
-    async for coll in collection.find():
-        new_coll.append(coll_helper(coll))
-    return new_coll
+    async for doc in collection.find():
+        new_collection.append(coll_helper(doc))
+    return new_collection
 
 
 client = get_server_info(MONGODB_INFO)
@@ -80,7 +79,6 @@ def read_root():
     return {"Hello": "World"}
 
 
-
 #@app.get("/items/{item_id}")
 #def read_item(item_id: int, q: Union[str, None] = None):
 #    return {"item_id": item_id, "q": q}
@@ -91,16 +89,16 @@ async def read_item(request: Request, id: str):
     return templates.TemplateResponse("item.html", {"request": request, "id": id})
 
 
-# Fix
-@app.get("/GET_coll", response_description="Clinical data retrieved")
-async def get_coll(request: Request):
-    clins = await retrieve_coll(COLLECTION)
+# Display Clinical Data
+@app.get("/clinical", response_description="Clinical data retrieved")
+async def get_collection(request: Request):
+    COLLECTION = "Clinical"
+    clins = await retrieve_data(COLLECTION)
     key_clins = list(clins[0].keys())
     if clins:
-        #return ResponseModel(clins, "Data retrieved successfully")
         return templates.TemplateResponse("Clinical.html", {"request": request, "clins": clins, "key_clins": key_clins})
     else:
-        return ResponseModel(clincals, "Empty list returned")
+        return ResponseModel(clins, "Empty list returned")
 
 
 if __name__ == "__main__":
