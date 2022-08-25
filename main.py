@@ -9,6 +9,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+# Import Form
+from fastapi import Form
+from src.model import spell_number
+
+
 
 MONGODB_INFO = "mongodb://10.64.16.166:27017"
 DATABASE = "FabryDisease"
@@ -79,18 +84,34 @@ def read_root():
     return {"Hello": "World"}
 
 
+
+# Define Form parameters (GET, POST)
+@app.get("/form")
+def form_post(request: Request):
+    result = "Type a number"
+    return templates.TemplateResponse('form.html', context={'request': request, 'result': result})
+
+@app.post("/form")
+def form_post(request: Request, num: int = Form(...)):
+    result = spell_number(num)
+    return templates.TemplateResponse('form.html', context={'request': request, 'result': result})
+
+
+
+# GET -> response JSON
 #@app.get("/items/{item_id}")
 #def read_item(item_id: int, q: Union[str, None] = None):
 #    return {"item_id": item_id, "q": q}
 
-# Add
+# GET -> render on HTML template
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: str):
     return templates.TemplateResponse("item.html", {"request": request, "id": id})
 
 
+
 # Display Clinical Data
-@app.get("/clinical", response_description="Clinical data retrieved")
+@app.get("/clinical", response_description="Retrieved Clinical Data !")
 async def get_collection(request: Request):
     COLLECTION = "Clinical"
     clins = await retrieve_data(COLLECTION)
@@ -99,6 +120,7 @@ async def get_collection(request: Request):
         return templates.TemplateResponse("Clinical.html", {"request": request, "clins": clins, "key_clins": key_clins})
     else:
         return ResponseModel(clins, "Empty list returned")
+
 
 
 if __name__ == "__main__":

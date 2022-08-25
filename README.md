@@ -18,3 +18,12 @@
 ### Template Engine
 * [Jinja2](https://fastapi.tiangolo.com/advanced/templates/)
   - Reference: https://www.youtube.com/watch?v=lhpNRDGzInw
+
+### Testing: GET & POST on same HTML Form Template
+1. Install package: `pip install python-multipart`
+2. main.py: Import `Form`
+3. main.py: Define `Form` parameters
+4. templates/form.html: About `"Form Fields"`
+* Reference:
+  * [How to Set Up a HTML App with FastAPI, Jinja, Forms & Templates](https://eugeneyan.com/writing/how-to-set-up-html-app-with-fastapi-jinja-forms-templates/)
+  * [FastAPI Doc: Form Data](https://fastapi.tiangolo.com/tutorial/request-forms/)
