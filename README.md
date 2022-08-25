@@ -24,6 +24,9 @@
 2. main.py: Import `Form`
 3. main.py: Define `Form` parameters
 4. templates/form.html: About `"Form Fields"`
+<img width="1440" alt="image" src="https://user-images.githubusercontent.com/42068007/186600358-a6584983-7bb3-4dc8-921f-fe5d278e72bf.png">
+<img width="1440" alt="image" src="https://user-images.githubusercontent.com/42068007/186600606-f2ff799e-8834-4a1c-825a-350ccc3ef130.png">
+
 * Reference:
   * [How to Set Up a HTML App with FastAPI, Jinja, Forms & Templates](https://eugeneyan.com/writing/how-to-set-up-html-app-with-fastapi-jinja-forms-templates/)
   * [FastAPI Doc: Form Data](https://fastapi.tiangolo.com/tutorial/request-forms/)
