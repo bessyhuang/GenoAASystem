@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi import Request, Form
 from fastapi.templating import Jinja2Templates
 
-# Import custom schemas & functions
+# Import custom functions
 from src.models.SpellNumber import spell_number
 
 
