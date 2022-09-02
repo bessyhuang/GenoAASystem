@@ -14,10 +14,10 @@ from typing import Union
 
 # Import custom schemas & functions
 import schemas
-from src.model import spell_number
 
 # Import routers
 #from routers import items
+from routers.api import router as api_router
 
 
 
@@ -30,6 +30,10 @@ templates = Jinja2Templates(directory="app/templates")
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+
+# Include routers
+app.include_router(api_router)
 
 
 ### Retrieve all documents in collection present in the database ###
@@ -71,18 +75,6 @@ async def GetAllClinicalData_jinja(request: Request):
     #key_clins: <class 'list'> -> X <class 'str'> X
 
 
-### --- TEST: Define Form parameters (GET, POST) --- ###
-"""
-@app.get("/form")
-def form_post(request: Request):
-    result = "Type a number"
-    return templates.TemplateResponse('form.html', context={'request': request, 'result': result})
-
-@app.post("/form")
-def form_post(request: Request, num: int = Form(...)):
-    result = spell_number(num)
-    return templates.TemplateResponse('form.html', context={'request': request, 'result': result})
-"""
 
 ### --- TEST: Get data from a dropdown menu with FastAPI --- ###
 """
