@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Clinical Data Details</title>
+
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+
+    <!-- Bootstrap 4.3.1 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+    <!-- START: Import `DataTables`: https://datatables.net/ -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
+    <script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+    </script>
+    <!-- END: Import `DataTables`: https://datatables.net/ -->
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">FastAPI</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul v-if="isLoggedIn" class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/Generate_file">Generate Analysis Result</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/About_me">Creator & Developer</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+  <!--  <div class="container-fluid"> -->
+    <br/>
+    <h2>Clinical Data for ERT and Non-ERT Group <span class="badge badge-secondary">Test</span></h2>
+    <br/>
+    <table class="table table-hover" id="myTable">
+      <thead class="thead-dark">
+      <tr>
+        {% for doc in clins | first %}
+        <th scope="col">{{ doc }}</th>
+        {% endfor %}
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for doc in clins %}
+      <tr>
+        {% for k, v in doc.items() %}
+        <th scope="row">{{ v }}</th>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<!--
+<table class="table table-hover">
+  <thead>
+    <tr>
+      {% for k in key_clins %}
+      <th scope="col" class="bg-primary">{{ k }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for doc in clins %}
+    <tr>
+      {% for k, v in doc.items() %}
+      <th scope="row">{{ v }}</th>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+-->
+
+</body>
+</html>
