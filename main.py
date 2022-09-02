@@ -1,4 +1,3 @@
-
 import motor.motor_asyncio
 import uvicorn
 import json
@@ -8,7 +7,6 @@ from fastapi import FastAPI
 from bson import json_util
 from bson.objectid import ObjectId
 from pydantic import BaseModel, Field
-
 
 ###
 from typing import Union
@@ -78,6 +76,7 @@ class ClinicalModel(BaseModel):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+
 ### Retrieve all documents in collection present in the database ###
 # GET All Clinical Data (BaseModel) => `Response: dict`
 @app.get("/dashboard_basemodel", response_description="Display All Clinical Data", response_model=ClinicalModel)
@@ -117,7 +116,7 @@ async def GetAllClinicalData_jinja(request: Request):
     #key_clins: <class 'list'> -> X <class 'str'> X
 
 
-# Define Form parameters (GET, POST)
+### --- TEST: Define Form parameters (GET, POST) --- ###
 @app.get("/form")
 def form_post(request: Request):
     result = "Type a number"
@@ -127,6 +126,29 @@ def form_post(request: Request):
 def form_post(request: Request, num: int = Form(...)):
     result = spell_number(num)
     return templates.TemplateResponse('form.html', context={'request': request, 'result': result})
+
+
+### --- TEST: Get data from a dropdown menu with FastAPI --- ###
+# Method 1
+from fastapi import Query
+
+@app.get('/get_countries_v1')
+async def get_countries(_q: str = Query("eu", enum=["eu", "us", "cn", "ru"])):
+    return {"selected": _q}
+
+
+# Method 2
+from enum import Enum
+
+class Country(str, Enum):
+    eu = "eu"
+    us = "us"
+    cn = "cn"
+    ru = "ru"
+
+@app.get("/get_countries_v2")
+def get_something(country: Country = Country.eu):
+    return {"country": country.value}
 
 
 # GET -> response JSON
@@ -147,7 +169,6 @@ async def search_clinicals(Age: Union[str, None] = None, LVMI: Union[str, None] 
     #    print(item)
     #json_docs = [json.dumps(doc, default=json_util.default) async for doc in db.Clinical.find({})]
     #return json_docs
-
 
 
 if __name__ == "__main__":
