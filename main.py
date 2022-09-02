@@ -1,3 +1,4 @@
+
 import motor.motor_asyncio
 import uvicorn
 import json
@@ -33,7 +34,14 @@ db = client["FabryDisease"]
 # Initialize FastAPI
 app = FastAPI()
 
+# Setting: static file
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Setting: templates file
+templates = Jinja2Templates(directory="templates")
+
+
+### Select specific fields and display on FastAPI interface ###
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
@@ -47,7 +55,6 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
-# 2. Select specific fields and display on FastAPI interface
 class ClinicalModel(BaseModel):
     #id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     #No: str = Field(alias="No")
@@ -72,12 +79,6 @@ class ClinicalModel(BaseModel):
         json_encoders = {ObjectId: str}
 
 ### Retrieve all documents in collection present in the database ###
-# Setting: static file
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Setting: templates file
-templates = Jinja2Templates(directory="templates")
-
 # GET All Clinical Data (BaseModel) => `Response: dict`
 @app.get("/dashboard_basemodel", response_description="Display All Clinical Data", response_model=ClinicalModel)
 async def GetAllClinicalData():
@@ -99,25 +100,22 @@ async def GetAllClinicalData_jinja(request: Request):
     COLLECTION = "Clinical"
     cursor = db[COLLECTION]
     DISPLAYED_FIELD = { "_id": 0, "SampleID": 1, "Group": 1, "Age": 1, "LVMI": 1, "microalbumin": 1, "Gender": 1, "ERT drugs": 1, "IVSD before ERT": 1, "Heart MRI LGE (fibrosis)": 1, "Remark": 1 }
+    clins = await cursor.find({}, DISPLAYED_FIELD).to_list(length=None)
+    JSON_clins = json.loads(json.dumps(clins))
+    LIST_key_clins = list(clins[0].keys())
+    return templates.TemplateResponse("Clinical.html", context={"request": request, "clins": JSON_clins, "key_clins": LIST_key_clins})
 
     #async for document in cursor.find({}, DISPLAYED_FIELD):
     #    pprint.pprint(document)
     #    return document
 
-    clins = await cursor.find({}, DISPLAYED_FIELD).to_list(length=None)
-    JSON_clins = json.loads(json.dumps(clins))
-    key_clins = list(clins[0].keys())
-
-    return templates.TemplateResponse("Clinical.html", {"request": request, "clins": JSON_clins, "key_clins": key_clins})
-
-    """
-    print('clins: {} -> {}'.format(type(clins), type(JSON_clins)))
+    #print('clins: {} -> {}'.format(type(clins), type(JSON_clins)))
     #clins: <class 'list'> -> <class 'list'>
 
-    JSON_key_clins = json.dumps(key_clins)
-    print('key_clins: {} -> X {} X'.format(type(key_clins), type(JSON_key_clins)))
+    #JSON_key_clins = json.dumps(key_clins)
+    #print('key_clins: {} -> X {} X'.format(type(key_clins), type(JSON_key_clins)))
     #key_clins: <class 'list'> -> X <class 'str'> X
-    """
+
 
 # Define Form parameters (GET, POST)
 @app.get("/form")
@@ -130,6 +128,7 @@ def form_post(request: Request, num: int = Form(...)):
     result = spell_number(num)
     return templates.TemplateResponse('form.html', context={'request': request, 'result': result})
 
+
 # GET -> response JSON
 #@app.get("/items/{item_id}")
 #def read_item(item_id: int, q: Union[str, None] = None):
@@ -138,13 +137,13 @@ def form_post(request: Request, num: int = Form(...)):
 # GET -> render on HTML template
 @app.get("/items/{id}", response_class=HTMLResponse)
 async def read_item(request: Request, id: str):
-    return templates.TemplateResponse("item.html", {"request": request, "id": id})
+    return templates.TemplateResponse("item.html", context={"request": request, "id": id})
 
 # Query: Multiple parameters
 @app.get("/search/clinicals")
 async def search_clinicals(Age: Union[str, None] = None, LVMI: Union[str, None] = None, Group: Union[str, None] = None, ERT_drug: Union[str, None] = None):
-    pass
-    #async for item in db.Clinical.find({}):
+    DISPLAYED_FIELD = { "_id": 0, "SampleID": 1, "Group": 1, "Age": 1, "LVMI": 1, "microalbumin": 1, "Gender": 1, "ERT drugs": 1, "IVSD before ERT": 1, "Heart MRI LGE (fibrosis)": 1, "Remark": 1 }
+    #async for item in db.Clinical.find({}, DISPLAYED_FIELD):
     #    print(item)
     #json_docs = [json.dumps(doc, default=json_util.default) async for doc in db.Clinical.find({})]
     #return json_docs
@@ -152,4 +151,4 @@ async def search_clinicals(Age: Union[str, None] = None, LVMI: Union[str, None] 
 
 
 if __name__ == "__main__":
-    uvicorn.run(app='main_v2:app', host="10.64.16.241", port=8000, reload=True, debug=True)
+    uvicorn.run(app='main:app', host="10.64.16.241", port=8000, reload=True, debug=True)
