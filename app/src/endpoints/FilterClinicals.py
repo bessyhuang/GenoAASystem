@@ -76,5 +76,5 @@ async def parameter_form(
 
     #print(pipeline)
     LIST_clins = await cursor.aggregate(pipeline).to_list(length=None)
-    print(LIST_clins)
+    #print(LIST_clins)
     return templates.TemplateResponse("FilterClins.html", context={"request": request, "clins": LIST_clins})
