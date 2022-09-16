@@ -7,8 +7,9 @@ from fastapi import APIRouter
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from typing import Union
-from fastapi import Form
+from typing import Union, Optional
+from fastapi import Form, Body
+from pydantic import BaseModel
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -78,3 +79,8 @@ async def parameter_form(
     LIST_clins = await cursor.aggregate(pipeline).to_list(length=None)
     #print(LIST_clins)
     return templates.TemplateResponse("FilterClins.html", context={"request": request, "clins": LIST_clins})
+
+@router.post("/Get_CaseControl_field")
+async def Get_CaseControl_field(request: Request, CaseControl_info: list):
+    print(type(CaseControl_info), CaseControl_info)
+    return {"message": CaseControl_info}

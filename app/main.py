@@ -20,7 +20,7 @@ app.mount("/static", StaticFiles(directory="./app/static"), name="static")
 # Include routers
 app.include_router(api_router)
 
-
+"""
 # Query: Multiple parameters
 @app.get("/search/clinicals")
 async def search_clinicals(Age: Union[str, None] = None, LVMI: Union[str, None] = None, Group: Union[str, None] = None, ERT_drug: Union[str, None] = None):
@@ -29,7 +29,7 @@ async def search_clinicals(Age: Union[str, None] = None, LVMI: Union[str, None] 
     #    print(item)
     #json_docs = [json.dumps(doc, default=json_util.default) async for doc in db.Clinical.find({})]
     #return json_docs
-
+"""
 
 if __name__ == "__main__":
-    uvicorn.run(app='main:app', host="10.64.16.241", port=8000, reload=True, debug=True)
+    uvicorn.run(app='main:app', host="10.64.16.241", port=8080, reload=True, debug=True)
