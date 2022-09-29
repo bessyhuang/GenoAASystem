@@ -64,21 +64,32 @@
             // console.log(value);
 
             console.log( $( ".CaseControl_field" ).serializeArray() );
-            var formdata = $( ".CaseControl_field" ).serializeArray();
-            var formdata = JSON.stringify(formdata);
+            var array_formdata = $( ".CaseControl_field" ).serializeArray();
+            console.log(jQuery.type(array_formdata));
+
+            for(var i=0; i < array_formdata.length; i++){
+                var CaseControl = array_formdata[i].value;
+                console.log(CaseControl);
+                if(CaseControl == "SELECT"){
+                    alert("Please select Case/Control !");
+                    break;
+                }
+            }
+
+            var str_formdata = JSON.stringify(array_formdata);
 
        	$.ajax({
             url: '/filter/Get_CaseControl_field',
-            data: formdata,
+            data: str_formdata,
             type: 'POST',
             dataType: "json",
             contentType: "application/json",
-            success: function() {
-                console.log("success");
-                // alert("success" + formdata);
+            success: function(res) {
+                // Server 處理後傳回的資料
+                console.log("success" + res["msg"]);
             },
             error: function() {
-                console.log("error" + formdata);
+                console.log("error");
                 // alert("error" + formdata);
             }
         });

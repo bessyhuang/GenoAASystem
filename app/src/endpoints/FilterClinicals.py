@@ -1,4 +1,5 @@
 import motor.motor_asyncio
+import os
 import json
 import schemas
 
@@ -80,7 +81,30 @@ async def parameter_form(
     #print(LIST_clins)
     return templates.TemplateResponse("FilterClins.html", context={"request": request, "clins": LIST_clins})
 
+
+InputFilePath = "/home/tsailab/GenoAASystem/GAAsystem_input/"
+OutputFilePath = "/home/tsailab/GenoAASystem/GAAsystem_output/"
+
 @router.post("/Get_CaseControl_field")
 async def Get_CaseControl_field(request: Request, CaseControl_info: list):
-    print(type(CaseControl_info), CaseControl_info)
-    return {"message": CaseControl_info}
+    #print('---', type(CaseControl_info), CaseControl_info, len(CaseControl_info))
+    #print(CaseControl_info[0], CaseControl_info[1])
+    with open(InputFilePath + 'CaseControl.txt', 'w') as f:
+        for doc in CaseControl_info:
+            print(doc.items(), type(doc), doc.keys())
+            # dict_items([('name', 'DPFWGS005-60'), ('value', 'Control')])
+            SampleID = list(doc.items())[0][1]
+            CaseControl = list(doc.items())[1][1]
+            f.write(SampleID + '\t' + CaseControl + '\n')
+
+    # Sort: Case first, Control second.
+    os.system("sort -k 2 GAAsystem_input/CaseControl.txt > GAAsystem_input/NEW_CaseControl.txt")
+    os.system("awk -F '\t' '{print $1}' GAAsystem_input/NEW_CaseControl.txt > NEW_FabrySamples.list")
+
+    # Merge (Option: reheader)
+    os.system("bash 2.Merge_all_vcf_for_Whole-Samples-In-One-File.sh {}NEW_FabrySamples.list /NovaSeq_127/FabryDisease/WGS/Parabricks/hg38/filtered_VCF/ {}".format(InputFilePath, OutputFilePath))
+
+    # Plink: make bfile & .ped & .info
+
+    df = {"input_info": CaseControl_info}
+    return {"msg": df}
