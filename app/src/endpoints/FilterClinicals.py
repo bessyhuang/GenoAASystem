@@ -98,13 +98,15 @@ async def Get_CaseControl_field(request: Request, CaseControl_info: list):
             f.write(SampleID + '\t' + CaseControl + '\n')
 
     # Sort: Case first, Control second.
-    os.system("sort -k 2 GAAsystem_input/CaseControl.txt > GAAsystem_input/NEW_CaseControl.txt")
-    os.system("awk -F '\t' '{print $1}' GAAsystem_input/NEW_CaseControl.txt > NEW_FabrySamples.list")
+    os.system("sort -k 2 /home/tsailab/GenoAASystem/GAAsystem_input/CaseControl.txt > /home/tsailab/GenoAASystem/GAAsystem_input/NEW_CaseControl.txt")
+    os.system("awk -F '\t' '{print $1}' /home/tsailab/GenoAASystem/GAAsystem_input/NEW_CaseControl.txt > /home/tsailab/GenoAASystem/GAAsystem_input/NEW_FabrySamples.list")
+    #os.system("sed -i 's/$/_DP10_MAF21.vcf.recode.vcf/g' /home/tsailab/GenoAASystem/GAAsystem_input/NEW_FabrySamples.list")
 
     # Merge (Option: reheader)
-    os.system("bash 2.Merge_all_vcf_for_Whole-Samples-In-One-File.sh {}NEW_FabrySamples.list /NovaSeq_127/FabryDisease/WGS/Parabricks/hg38/filtered_VCF/ {}".format(InputFilePath, OutputFilePath))
+    os.system("bash 2.Merge_all_vcf_for_Whole-Samples-In-One-File.sh {}NEW_FabrySamples.list {}".format(InputFilePath, OutputFilePath))
 
     # Plink: make bfile & .ped & .info
+    os.system("python3 Make_ped_and_info_file.py")
 
     df = {"input_info": CaseControl_info}
     return {"msg": df}
